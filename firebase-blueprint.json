@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Employee": {
+      "title": "Employee",
+      "description": "Information about an employee in the HR system.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name of the employee" },
+        "nationalId": { "type": "string", "description": "National ID number" },
+        "governorate": { "type": "string", "description": "Home governorate" },
+        "department": { "type": "string", "description": "Working department" },
+        "position": { "type": "string", "description": "Job title" },
+        "joinDate": { "type": "string", "format": "date-time", "description": "Date the employee joined" },
+        "salary": { "type": "number", "description": "Basic monthly salary" },
+        "status": { "type": "string", "enum": ["active", "suspended", "terminated"], "description": "Employment status" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "userId": { "type": "string", "description": "Firebase Auth UID if linked" }
+      },
+      "required": ["name", "nationalId", "joinDate", "salary", "status"]
+    },
+    "LeaveRequest": {
+      "title": "Leave Request",
+      "description": "A request for time off made by an employee.",
+      "type": "object",
+      "properties": {
+        "employeeId": { "type": "string" },
+        "type": { "type": "string", "enum": ["annual", "sick", "unpaid", "emergency"] },
+        "startDate": { "type": "string", "format": "date-time" },
+        "endDate": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "reason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["employeeId", "type", "startDate", "endDate", "status"]
+    },
+    "EOSRecord": {
+      "title": "End of Service Record",
+      "description": "Calculated end of service benefit for an employee.",
+      "type": "object",
+      "properties": {
+        "employeeId": { "type": "string" },
+        "calculationDate": { "type": "string", "format": "date-time" },
+        "yearsOfService": { "type": "number" },
+        "totalBenefit": { "type": "number" },
+        "lastSalary": { "type": "number" },
+        "notes": { "type": "string" }
+      },
+      "required": ["employeeId", "calculationDate", "totalBenefit"]
+    }
+  },
+  "firestore": {
+    "/employees/{employeeId}": { "schema": "Employee", "description": "Collection of employees" },
+    "/leaveRequests/{requestId}": { "schema": "LeaveRequest", "description": "Collection of leave requests" },
+    "/eosRecords/{recordId}": { "schema": "EOSRecord", "description": "Historical EOS calculations" }
+  }
+}

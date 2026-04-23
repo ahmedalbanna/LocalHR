@@ -1,0 +1,25 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+::selection {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+body {
+  background-color: #F1F5F9;
+  color: #0f172a;
+}
+
+button {
+  cursor: pointer;
+}
+
+input, select, textarea {
+  cursor: text;
+}

@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Employees
+    match /employees/{employeeId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin() && isValidId(employeeId);
+    }
+
+    // Leave Requests
+    match /leaveRequests/{requestId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // EOS Records
+    match /eosRecords/{recordId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Admins collection - only readable by admins
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && (request.auth.uid == adminId || isAdmin());
+      allow write: if false; // Only manageable via console
+    }
+  }
+}
